@@ -1,0 +1,64 @@
+// MATERIAL
+
+// $box-no-fill: true;
+// $enable-shadows: true;
+// $input-focus-bottom: true;
+// $prefer-filled-buttons: true;
+// $clear-checkboxes: true;
+// $material-switches: true;
+// $target-radio: true;
+// $radius2: 0.2rem;
+// $fillable-theme: true;
+// $white8: #ccc;
+
+// MOZILLA
+
+// $no-text-buttons: true;
+// $transparent-focus-shadows: true;
+
+// Todoka
+
+// $button-normal-border: true;
+// $button-hover-outline: true;
+// $fill-buttons: true;
+
+// Todoka+
+
+// $enable-shadows: true;
+// $button-normal-border: true;
+// $fill-buttons: true;
+// $transparent-focus-shadows: true;
+// $box-border: true;
+
+// Medium
+
+// $full-round-buttons: true;
+// $prefer-outline-instead-normal: true;
+// $box-no-fill: true;
+// $full-round-inputs: true;
+// $input-no-fill: true;
+
+// $input-no-fill: true;
+// $input-border-bottom: true;
+// $input-focus-bottom: true;
+// $white8: #ccc;
+
+
+
+
+$button-normal-border: true;
+$transparent-focus-shadows: true;
+$box-border: true;
+$clear-checkboxes: true;
+$material-switches: true;
+$target-radio: true;
+$button-normal-border: true;
+$theme2: hsl(20, 43%, 43%);
+$theme: hsl(3, 43%, 43%);
+$black8: hsl(235,10%,30%);
+$black1: hsl(235,30%,8%);
+$radius1: 4px;
+$radius2: 6px;
+
+
+@import '../main.scss';

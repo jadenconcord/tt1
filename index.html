@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/theme/default.css" id="theme">
+    <link rel="stylesheet" href="css/icons.css">
+    <title>Tasks</title>
+</head>
+
+<body class="dark">
+    <header class="container fillable">
+        <div class="float-right">
+            <section tabindex="0">
+                <span class="material-icons arrow">arrow_drop_down</span>
+                <span class="material-icons account b-icon">account_circle</span>
+                <ul>
+                    <li><button onclick="preferencesPopup()">
+                            <span>Settings</span>
+                            <span class="material-icons">settings</span>
+                        </button></li>
+                    <!-- <li><button onclick="accountPopup()">
+                            <span>Help</span>
+                            <span class="material-icons">help</span>
+                        </button></li> -->
+                    <!-- <li><button onclick="openTutorial()">
+                            <span>Tutorial</span>
+                            <span class="material-icons">accessibility_new</span>
+                        </button></li> -->
+                    <!-- <li><button  onclick="accountPopup()" class="upgrade">
+                            <span>Upgrade</span>
+                            <span class="material-icons">file_upload</span>
+                        </button></li> -->
+                </ul>
+            </section>
+        </div>
+    </header>
+    <aside class="container">
+        <header>
+            <button class="float-right material-icons b-icon" onclick="promptAddSection()">add</button>
+            <div class="clear"></div>
+        </header>
+        <nav>
+            <script type="text/template">
+                {each pages page i}
+                <button class="{page.active ? 'active' : ''}" trigger="change" value="{i}">
+                    <span class="material-icons icon">{page.icon}</span>
+                    <span>{page.name}</span>
+                </button>
+                {/each}
+            </script>
+        </nav>
+    </aside>
+    <div class="content">
+        <main class="content-center">
+            Loading...
+            <script type="text/template" name="category">
+                <h1>
+                    <div class="more">{page.name}
+                        <div style="display: inline-block" tabindex="0">
+                            <button class="material-icons b-icon" title="Actions">arrow_drop_down</button>
+                            <ul>
+                                <li><button trigger="editPage">Edit<span class="material-icons">edit</span></button></li>
+                                <li><button trigger="deletePage">Delete<span class="material-icons">delete</span></button></li>
+                            </ul>
+                        </div>
+                    </div>
+                </h1>
+                <div class="box container">
+                    {text trigger="addTaskInput" triggerevent="keydown" maxlength="38" name="name" placeholder="Task Name" required/}
+                    {text trigger="addTaskInput" triggerevent="keydown" name="category" rows="100" list="datalist-groups" size="7" placeholder="Sub-Category" value="[category]"/}
+                    {button b2 trigger="addTask" class="btn-addTask"}Add{/button}
+                    {checkbox name="hasDate" trigger="toggle" value="date-input-section" triggerevent="change" label="Has a Date"/}
+                    <div class="hide" id="date-input-section"><br>
+                        {date name="date"/}<br><br>
+                        {checkbox name="hasRepeat" trigger="toggle" value="repeat-input-section" triggerevent="change" label="Repeat"/}
+                        <div class="indent hide" id="repeat-input-section">
+                            {select name="repeatTimes" options="!disabled:Select Repeat Times,daily:Every Day,weekly:Every Week,other:Every Other Week,yearly:Every Year,weekday:Each Weekday,monthly:Every Month"/}
+                        </div><br>
+                        {button b2 trigger="addTask"}Add{/button}
+                    </div>
+
+                    <datalist id="datalist-groups">
+                        {each page.groups group}
+                        <option value="{group.name}">
+                        {/each}
+                    </datalist>
+                </div>
+
+
+                {if getDefaultTasks().tasks.length}
+                <div class="box">
+                    {each defaultTasks.tasks task taskID}
+                        {generateTasks({{group:defaultTasks.group, groupID:defaultTasks.groupID, task, taskID}})}
+                    {/each}
+                </div>
+                {/if}
+
+                {each page.groups group groupID}
+                {if group.name}
+                <details {group?.closed ? '' : 'open'}>
+                    <summary trigger="toggleGroup" value="{groupID}">{group.name}
+                        <div class="float-right">
+                            <button class="material-icons b-icon" title="Create tasks inside {group.name}" trigger="addTaskFromGroup" value="{group.name}">add</button>
+                            <div class="more">
+                                <button class="material-icons b-icon" title="Actions">more_vert</button>
+                                <ul>
+                                    <li><button trigger="editGroup" value="{groupID}">Edit<span class="material-icons">edit</span></button></li>
+                                    <li><button trigger="moveGroup" value="{groupID}">Move<span class="material-icons">open_with</span></button></li>
+                                    <li><button trigger="deleteGroup" value="{groupID}">Delete<span class="material-icons">delete</span></button></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </summary>
+                    <section>
+                        {each sortChecked(group.tasks) task taskID}
+                            {generateTasks({{group, groupID, task, taskID}})}
+                        {/each}
+                    </section>
+                </details>
+                {/if}
+                {/each}
+            </script>
+
+            <script type="text/template" name="home">
+                <h1>Home</h1>
+                {if filterAllTasks(({{task}}) => task.today).length == 0}
+                <section class="box" style="position: relative">
+                    <button class="b-icon close-icon" onclick="this.parentElement.style.display = 'none'">
+                    <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 348.333 348.334" style="enable-background:new 0 0 348.333 348.334;" xml:space="preserve"><path d="M336.559,68.611L231.016,174.165l105.543,105.549c15.699,15.705,15.699,41.145,0,56.85
+                    c-7.844,7.844-18.128,11.769-28.407,11.769c-10.296,0-20.581-3.919-28.419-11.769L174.167,231.003L68.609,336.563
+                    c-7.843,7.844-18.128,11.769-28.416,11.769c-10.285,0-20.563-3.919-28.413-11.769c-15.699-15.698-15.699-41.139,0-56.85
+                    l105.54-105.549L11.774,68.611c-15.699-15.699-15.699-41.145,0-56.844c15.696-15.687,41.127-15.687,56.829,0l105.563,105.554
+                    L279.721,11.767c15.705-15.687,41.139-15.687,56.832,0C352.258,27.466,352.258,52.912,336.559,68.611z"></path></svg></button>
+                    <h2>Welcome to Tasks</h2>
+                    <p>Star tasks to see them show up here.</p>
+                </section>
+                {/if}
+                {if filterAllTasks(({{task}}) => task.today).length}
+                <details open>
+                    <summary>Todays Tasks</summary>
+                    {each filteredTasks task}
+                        {generateTasks({{group:task.group, groupID:task.groupID, task, taskID:task.taskID, taskPageID:task.taskPageID}})}
+                    {/each}
+                </details>
+                {/if}
+            </script>
+
+            <script type="text/template" name="calendar">
+                <div class="calendar">
+                    <header>
+                        <h2>April</h2>
+                        <a class="btn-prev fontawesome-angle-left" href="#"></a>
+                        <a class="btn-next fontawesome-angle-right" href="#"></a>
+                    </header>
+
+                    <table>
+                        <thead class="fillable">
+                            <tr>
+                                <td>Sunday</td>
+                                <td>Monday</td>
+                                <td>Tuesday</td>
+                                <td>Wednesday</td>
+                                <td>Thursday</td>
+                                <td>Friday</td>
+                                <td>Saturday</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {each generateCalender(0) row}
+                            <tr>
+                                {each row col}
+                                <td><span class="date">{col.date}</span>awge</td>
+                                {/each}
+                            </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                </div>
+            </script>
+        </main>
+    </div>
+
+    <button class="mobile-menu material-icons b2" onclick="mobileOpenSidebar()">
+        menu
+    </button>
+
+    <script type="text/template" id="tasks-temp">
+        <div class="task {task.check ? 'checked' : ''}" trigger="navigateTask" triggerevent="keyup">
+            <button page="{taskPageID}" item="1" trigger="checkTask" value="{taskID}" group="{groupID}" class="material-icons">{task.check ? 'check_box' : 'check_box_outline_blank'}</button>
+            <span page="{taskPageID}" item="2" group="{groupID}" contenteditable trigger="renameTask" triggerevent="input" value="{taskID}">{task.name}</span>
+            {if task.hasDate}
+            <input page="{taskPageID}" item="3" type="date" value="{task.date}" trigger="updateDate" triggerevent="change" data-value="{taskID}" group="{groupID}">
+            {/if}
+            <div class="float-right">
+                <button page="{taskPageID}" item="4" title="Do Today" class="material-icons today {task.today ? 'on' : ''}" trigger="setToday" value="{taskID}" group="{groupID}">star</button>
+                <div class="more">
+                    <button class="material-icons">more_vert</button>
+                    <ul>
+                        <li><button page="{taskPageID}" trigger="editTask" group="{groupID}" value="{taskID}">Edit<span class="material-icons">edit</span></button></li>
+                        <li><button page="{taskPageID}" trigger="moveTask" group="{groupID}" value="{taskID}">Move<span class="material-icons">open_with</span></button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" id="welcome-popup">
+        <div class="welcome-popup">
+    <header>
+      <h2>Welcome!</h2>
+    </header>
+    <div section="1">
+      <h3>Select Theme</h3>
+      {switch name="dark" label="Dark" trigger="changeDark"/}<br><br>
+      <div class="themes">
+        <button onclick="setTheme('default')"><img class="active" src="img/theme_default.png">Default</button>
+        <button onclick="setTheme('material')"><img src="img/theme_material.png">Material</button>
+        <button onclick="setTheme('todoka')"><img src="img/theme_todoka.png">Todoka</button>
+        <button onclick="setTheme('medium')"><img src="img/theme_medium.png">Medium</button>
+      </div>
+      <br><br>{button b2 center trigger="nextSection"}Next{/button}
+    </div>
+    <div section="2" style="display: none">
+      <h3>Create Account</h3>
+      <p>Enter a passkey to access your data. Don't forget it and make sure it is unique.</p>
+      <div class="box">
+        {text name="passkey" placeholder="Passkey" minlength="4" maxlength="64" required/}
+        {button b2 trigger="login"}Enter{/button}
+      </div>
+    </div>
+    <div section="3" style="display: none">
+      <h3>Thanks for using this!</h3>
+      <br><br>{button b2 center onclick="[close]"}Finish{/button}
+    </div>
+  </div>
+    </script>
+
+    <script src="js/ice/ice.js"></script>
+    <!-- <script src="js/alt.js"></script> -->
+    <script src="js/global-storage.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
